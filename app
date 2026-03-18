@@ -149,7 +149,7 @@ const IngestionScreen = () => {
         Scalable pipeline for semi-structured documents across SDS, TDS, and specification sheets.
       </p>
  
-      {/* 🔥 UPLOAD (FULL WIDTH + TALLER) */}
+      {/* UPLOAD (FULL WIDTH + TALLER) */}
       <div className="bg-white p-6 rounded-xl border min-h-[180px]">
         <h3 className="font-semibold mb-4">Upload & Queue</h3>
  
@@ -165,7 +165,7 @@ const IngestionScreen = () => {
             <option>Spec</option>
           </select>
  
-          <button className="bg-green-500 text-white px-5 rounded text-sm font-medium">
+          <button className="bg-teal-700 text-white px-5 rounded text-sm font-medium">
             Enqueue
           </button>
         </div>
@@ -176,11 +176,11 @@ const IngestionScreen = () => {
               {step}
             </div>
           ))}
-          <div className="ml-auto text-green-600 text-sm">Advance All →</div>
+          <div className="ml-auto text-green-600 text-sm">Advance All</div>
         </div>
       </div>
  
-      {/* 🔥 ACTIVE QUEUE BELOW */}
+      {/* ACTIVE QUEUE */}
       <div className="bg-white p-5 rounded-xl border">
         <h3 className="font-semibold mb-4">Active Queue</h3>
  
@@ -199,7 +199,7 @@ const IngestionScreen = () => {
               <tr key={i} className="border-t">
                 <td className="py-2">{q.name}</td>
                 <td>{q.type}</td>
-                <td>• {q.status}</td>
+                <td>{q.status}</td>
                 <td className="text-right space-x-2">
                   <button
                     onClick={() => handleAdvance(i)}
@@ -221,34 +221,34 @@ const IngestionScreen = () => {
         </table>
       </div>
  
-      {/* 🔥 BOTTOM SECTION (SIDE BY SIDE) */}
-      <div className="grid grid-cols-2 gap-6">
+      {/* BOTTOM SECTION stacked full width */}
+      <div className="flex flex-col gap-6">
  
-              {/* 🔥 FULL WIDTH TYPE DISTRIBUTION */}
-      <div className="bg-white p-4 rounded-xl border">
-        <h3 className="text-sm font-medium mb-2">Type Distribution</h3>
-      
-        <div className="flex h-3 rounded overflow-hidden mb-3">
-          <div style={{ background: "#183555", width: "50%" }} />
-          <div className="bg-yellow-400 w-1/3" />
-          <div className="bg-green-400 w-1/6" />
+        {/* TYPE DISTRIBUTION full width */}
+        <div className="bg-white p-4 rounded-xl border w-full">
+          <h3 className="text-sm font-medium mb-2">Type Distribution</h3>
+ 
+          <div className="flex h-3 rounded overflow-hidden mb-3">
+            <div style={{ background: "#183555", width: "50%" }} />
+            <div className="bg-yellow-400 w-1/3" />
+            <div className="bg-teal-700 w-1/6" />
+          </div>
+ 
+          <div className="text-xs space-y-1">
+            <div className="flex justify-between"><span>SDS</span><span>142</span></div>
+            <div className="flex justify-between"><span>TDS</span><span>106</span></div>
+            <div className="flex justify-between"><span>Spec</span><span>76</span></div>
+          </div>
         </div>
-      
-        <div className="text-xs space-y-1">
-          <div className="flex justify-between"><span>SDS</span><span>142</span></div>
-          <div className="flex justify-between"><span>TDS</span><span>106</span></div>
-          <div className="flex justify-between"><span>Spec</span><span>76</span></div>
+ 
+        {/* PIPELINE HEALTH 鈥� full width, below */}
+        <div className="bg-white p-4 rounded-xl border w-full">
+          <h3 className="text-sm font-medium mb-3">Pipeline Health</h3>
+ 
+          <Bar label="Success Rate" value="97%" width="97%" color="bg-teal-700" />
+          <Bar label="Backlog" value="12 docs" width="40%" color="bg-yellow-400" />
+          <Bar label="Latency (avg)" value="1.8 min" width="60%" customColor="#183555" />
         </div>
-      </div>
-      
-      {/* 🔥 PIPELINE HEALTH BELOW */}
-      <div className="bg-white p-4 rounded-xl border">
-        <h3 className="text-sm font-medium mb-3">Pipeline Health</h3>
-      
-        <Bar label="Success Rate" value="97%" width="97%" color="bg-green-400" />
-        <Bar label="Backlog" value="12 docs" width="40%" color="bg-yellow-400" />
-        <Bar label="Latency (avg)" value="1.8 min" width="60%" customColor="#183555" />
-      </div>
  
       </div>
  
@@ -272,9 +272,8 @@ const Bar = ({ label, value, width, color, customColor }: any) => (
     </div>
   </div>
 );
-/* ---------------- HOME (UNCHANGED) ----------------
-   The HomeDashboard block below is the exact block you pasted earlier — left unchanged.
-*/
+ 
+/* ---------------- HOME ---------------- */
  
 const HomeDashboard = ({ metrics, setCurrentScreen }: any) => {
   const lineData = [42, 48, 56, 60, 58, 64, 72, 76, 80, 88, 96, 100];
@@ -309,8 +308,7 @@ const HomeDashboard = ({ metrics, setCurrentScreen }: any) => {
         <MetricCard title="Assistant Answers" value={metrics.assistantAnswers} trend="+18 this week" />
         <MetricCard title="Compliance Score" value={`${metrics.complianceScore}%`} trend="Stable" />
       </div>
- 
-      {/* CHARTS */}
+{/* CHARTS */}
       <div className="grid grid-cols-3 gap-6">
  
         {/* Throughput */}
