@@ -10,6 +10,8 @@ import {
   FileText,
 } from "lucide-react";
  
+/* ---------------- TYPES ---------------- */
+ 
 type Screen =
   | "home"
   | "ingestion"
@@ -19,6 +21,14 @@ type Screen =
   | "regulatory"
   | "comparison"
   | "generator";
+ 
+type QueueItem = {
+  name: string;
+  type: string;
+  status: string;
+};
+ 
+/* ---------------- APP ---------------- */
  
 export default function App() {
   const [currentScreen, setCurrentScreen] = useState<Screen>("home");
@@ -83,7 +93,10 @@ export default function App() {
             setCurrentScreen={setCurrentScreen}
           />
         )}
-        {currentScreen !== "home" && (
+ 
+        {currentScreen === "ingestion" && <IngestionScreen />}
+ 
+        {currentScreen !== "home" && currentScreen !== "ingestion" && (
           <Placeholder title={currentScreen} />
         )}
       </div>
@@ -91,7 +104,177 @@ export default function App() {
   );
 }
  
-/* ---------------- HOME ---------------- */
+/* ---------------- INGESTION SCREEN ---------------- */
+ 
+const IngestionScreen = () => {
+  const [queue, setQueue] = useState<QueueItem[]>([
+    { name: "SDS_CatalystA12.pdf", type: "SDS", status: "Queued" },
+    { name: "TDS_SolventS9.pdf", type: "TDS", status: "Classified" },
+    { name: "Spec_Sheet_R55.docx", type: "Spec", status: "Extracted" },
+  ]);
+ 
+  const stages = ["Queued", "Classified", "Extracted", "Validated", "Stored"];
+ 
+  const handleRemove = (index: number) => {
+    setQueue((prev) => prev.filter((_, i) => i !== index));
+  };
+ 
+  const handleAdvance = (index: number) => {
+    setQueue((prev) =>
+      prev.map((item, i) => {
+        if (i !== index) return item;
+        const nextIndex = stages.indexOf(item.status) + 1;
+        return {
+          ...item,
+          status: stages[nextIndex] || item.status,
+        };
+      })
+    );
+  };
+ 
+  return (
+    <div className="space-y-6">
+ 
+      {/* HEADER */}
+      <div className="flex items-center gap-3">
+        <h1 className="text-2xl font-semibold">Automate Ingestion</h1>
+        <div className="flex gap-2">
+          <div className="w-4 h-4 bg-yellow-400" />
+          <div className="w-4 h-4 bg-yellow-400" />
+          <div className="w-4 h-4 bg-yellow-400" />
+        </div>
+      </div>
+ 
+      <p className="text-sm text-slate-500">
+        Scalable pipeline for semi-structured documents across SDS, TDS, and specification sheets.
+      </p>
+ 
+      {/* 🔥 UPLOAD (FULL WIDTH + TALLER) */}
+      <div className="bg-white p-6 rounded-xl border min-h-[180px]">
+        <h3 className="font-semibold mb-4">Upload & Queue</h3>
+ 
+        <div className="flex gap-3 mb-6">
+          <input
+            placeholder="e.g., SDS_NewProduct_v1.pdf"
+            className="flex-1 p-3 rounded border text-sm"
+          />
+ 
+          <select className="p-3 rounded border text-sm">
+            <option>SDS</option>
+            <option>TDS</option>
+            <option>Spec</option>
+          </select>
+ 
+          <button className="bg-green-500 text-white px-5 rounded text-sm font-medium">
+            Enqueue
+          </button>
+        </div>
+ 
+        <div className="flex items-center gap-3 text-xs">
+          {["Upload", "Classify", "Extract", "Validate", "Store"].map((step) => (
+            <div key={step} className="px-3 py-1 bg-slate-100 rounded-full border">
+              {step}
+            </div>
+          ))}
+          <div className="ml-auto text-green-600 text-sm">Advance All →</div>
+        </div>
+      </div>
+ 
+      {/* 🔥 ACTIVE QUEUE BELOW */}
+      <div className="bg-white p-5 rounded-xl border">
+        <h3 className="font-semibold mb-4">Active Queue</h3>
+ 
+        <table className="w-full text-sm">
+          <thead className="text-slate-500 text-xs">
+            <tr>
+              <th className="text-left pb-2">Document</th>
+              <th className="text-left pb-2">Type</th>
+              <th className="text-left pb-2">Status</th>
+              <th className="text-right pb-2">Actions</th>
+            </tr>
+          </thead>
+ 
+          <tbody>
+            {queue.map((q, i) => (
+              <tr key={i} className="border-t">
+                <td className="py-2">{q.name}</td>
+                <td>{q.type}</td>
+                <td>• {q.status}</td>
+                <td className="text-right space-x-2">
+                  <button
+                    onClick={() => handleAdvance(i)}
+                    className="px-3 py-1 bg-slate-200 rounded text-xs"
+                  >
+                    Advance
+                  </button>
+ 
+                  <button
+                    onClick={() => handleRemove(i)}
+                    className="px-3 py-1 bg-red-500 text-white rounded text-xs"
+                  >
+                    Remove
+                  </button>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+ 
+      {/* 🔥 BOTTOM SECTION (SIDE BY SIDE) */}
+      <div className="grid grid-cols-2 gap-6">
+ 
+              {/* 🔥 FULL WIDTH TYPE DISTRIBUTION */}
+      <div className="bg-white p-4 rounded-xl border">
+        <h3 className="text-sm font-medium mb-2">Type Distribution</h3>
+      
+        <div className="flex h-3 rounded overflow-hidden mb-3">
+          <div style={{ background: "#183555", width: "50%" }} />
+          <div className="bg-yellow-400 w-1/3" />
+          <div className="bg-green-400 w-1/6" />
+        </div>
+      
+        <div className="text-xs space-y-1">
+          <div className="flex justify-between"><span>SDS</span><span>142</span></div>
+          <div className="flex justify-between"><span>TDS</span><span>106</span></div>
+          <div className="flex justify-between"><span>Spec</span><span>76</span></div>
+        </div>
+      </div>
+      
+      {/* 🔥 PIPELINE HEALTH BELOW */}
+      <div className="bg-white p-4 rounded-xl border">
+        <h3 className="text-sm font-medium mb-3">Pipeline Health</h3>
+      
+        <Bar label="Success Rate" value="97%" width="97%" color="bg-green-400" />
+        <Bar label="Backlog" value="12 docs" width="40%" color="bg-yellow-400" />
+        <Bar label="Latency (avg)" value="1.8 min" width="60%" customColor="#183555" />
+      </div>
+ 
+      </div>
+ 
+    </div>
+  );
+};
+ 
+/* ---------------- BAR ---------------- */
+ 
+const Bar = ({ label, value, width, color, customColor }: any) => (
+  <div className="mb-3 text-xs">
+    <div className="flex justify-between mb-1">
+      <span>{label}</span>
+      <span>{value}</span>
+    </div>
+    <div className="h-2 bg-slate-200 rounded">
+      <div
+        className={`h-2 rounded ${color || ""}`}
+        style={{ width, background: customColor || undefined }}
+      />
+    </div>
+  </div>
+);
+/* ---------------- HOME (UNCHANGED) ----------------
+   The HomeDashboard block below is the exact block you pasted earlier — left unchanged.
+*/
  
 const HomeDashboard = ({ metrics, setCurrentScreen }: any) => {
   const lineData = [42, 48, 56, 60, 58, 64, 72, 76, 80, 88, 96, 100];
