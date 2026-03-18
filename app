@@ -98,9 +98,9 @@ const HomeDashboard = ({ metrics, setCurrentScreen }: any) => {
   const max = Math.max(...lineData);
  
   const dist = [
-    { label: "SDS", value: 142, color: "bg-blue-500" },
+    { label: "SDS", value: 142, color: "bg-blue-900" },
     { label: "TDS", value: 106, color: "bg-yellow-400" },
-    { label: "Spec", value: 76, color: "bg-green-500" },
+    { label: "Spec", value: 76, color: "bg-teal-700" },
   ];
  
   const links = [
@@ -117,6 +117,7 @@ const HomeDashboard = ({ metrics, setCurrentScreen }: any) => {
     <div className="space-y-6">
  
       <Header title="ChemOps Intelligence" />
+      <div className="text-slate-500 text-sm -mt-4">Overview of platform activity</div>
  
       {/* METRICS */}
       <div className="grid grid-cols-4 gap-4">
@@ -187,12 +188,12 @@ const HomeDashboard = ({ metrics, setCurrentScreen }: any) => {
  
               const color =
                 val > 75
-                  ? "bg-red-500"
+                  ? "bg-teal-700"
                   : val > 50
                   ? "bg-yellow-400"
                   : val > 25
-                  ? "bg-blue-400"
-                  : "bg-green-400";
+                  ? "bg-blue-900"
+                  : "bg-slate-500";
  
               return <div key={i} className={`h-6 rounded ${color}`} />;
             })}
